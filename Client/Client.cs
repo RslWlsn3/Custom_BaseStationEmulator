@@ -11,7 +11,10 @@ using System.Net.Sockets;
     {
         static void Main(string[] args)
         {
-        try
+        Console.WriteLine("Give client an ID");
+        string input = Console.ReadLine();
+        string ID = "ID#" + input + ": ";
+        try //allows us to check if there is a server running, else throw an exeption.
         {
             TcpClient client = new TcpClient("127.0.0.1", 8080);
             StreamReader reader = new StreamReader(client.GetStream());
@@ -21,8 +24,8 @@ using System.Net.Sockets;
             {
                 Console.WriteLine("Enter string to send to sever (Enter Exit to Exit): ");
                 s = Console.ReadLine();
-                writer.WriteLine(s); //send data to sever
-                writer.Flush();
+                writer.WriteLine(ID + s); //send data to sever
+                writer.Flush();         
                 string messageFromSever = reader.ReadLine(); // We know that the sever sends an echo respone right back so we are ready to read this
                 Console.WriteLine(messageFromSever);
             }
