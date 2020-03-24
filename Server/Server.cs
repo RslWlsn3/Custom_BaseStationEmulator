@@ -12,9 +12,40 @@ using System.Threading;
 
 namespace Custom_BaseStationEmulator
 {
+    class Message
+    {
+        string message;
+        string senderID;
+        DateTime dt;
+        string response;
+
+        public Message(string ID, string mess, string res)
+        {
+            message = mess;
+            senderID = ID;
+            response = res;
+            dt = DateTime.Now;
+        }
+
+        public void printMessage()
+        {
+            Console.WriteLine("Sender ID: " + senderID + "     Message: " + message + "     Time Stamp: " + dt);
+            Console.WriteLine("Response: " + response + "\n");
+        }
+    }
     class Server
     {
         static Hashtable messageHash = new Hashtable();
+
+        private static void saveMessage(string ID, string message, string response)
+        {
+            Message messageObject = new Message(ID, message, response);
+            if (!messageHash.ContainsKey(ID))
+            {
+                messageHash.Add(ID, new List<Message>());
+            }
+            ((List<Message>)messageHash[ID]).Add(messageObject);
+        }
         private static void ProccessClientReq(object argument) 
         {
             TcpClient client = (TcpClient)argument;
@@ -23,27 +54,29 @@ namespace Custom_BaseStationEmulator
                 StreamReader reader = new StreamReader(client.GetStream());
                 StreamWriter writer = new StreamWriter(client.GetStream()); //these allow the Client (on the sever side) to read and write 
                 string s = string.Empty;
+                string response;
                 while (!(s = reader.ReadLine()).Equals("Exit") || (s == null))
                 { 
-                    string[] message = s.Split(new char[] { ' ' }, 2); // splits id from message
+                    string[] fullMessage = s.Split(new char[] { ' ' }, 2); // splits id from message
+                    string ID = fullMessage[0];
+                    string message = fullMessage[1];
 
-                    if (!messageHash.ContainsKey(message[0])) {
-                        messageHash.Add(message[0], new List<string>());
-                    }
-                    ((List<string>)messageHash[message[0]]).Add(message[1]);
                     Console.WriteLine("Client Msg: " + s);
 
-                    if (s == "RTS")
+                    if (message == "RTS")
                     {
-                        Console.WriteLine("CTS");
-                        writer.WriteLine("Server: CTS"); 
+                        response = "CTS";
+                        Console.WriteLine(response);
+                        writer.WriteLine("Server: " + response); 
                     }
                     else
                     {
-                        Console.WriteLine("ACK");
-                        writer.WriteLine("Server: ACK");
+                        response = "ACK";
+                        Console.WriteLine(response);
+                        writer.WriteLine("Server: " + response);
                     }
                     writer.Flush();
+                    saveMessage(ID, message, response);
                 }
                 reader.Close();
                 writer.Close();
@@ -70,16 +103,15 @@ namespace Custom_BaseStationEmulator
                 {
                     try
                     {
+                        Console.WriteLine("\n*************************************************");
                         foreach (object key in messageHash.Keys)
-                        {
-                            Console.WriteLine(key);
-                            foreach (string mes in (dynamic)messageHash[key])
+                        {                            
+                            foreach (Message mes in (dynamic)messageHash[key])
                             {
-                                Console.WriteLine(mes);
+                                mes.printMessage();
                             }
                         }
-                        input = Console.ReadLine();
-
+                        Console.WriteLine("*************************************************\n");
                     }
                     catch(Exception e)
                     {
@@ -97,15 +129,16 @@ namespace Custom_BaseStationEmulator
                 listener = new TcpListener(IPAddress.Parse("127.0.0.1"), 8080);
                 listener.Start(); // enables listening
                 Console.WriteLine("The server has started");
+                Console.WriteLine("\n*******************************\nEnter \"db\" to veiw all messages\n*******************************\n");
                 Thread t1 = new Thread(HandleDB);
                 t1.Start(); //new thread is spawned, ProccessClientReq is called, while loop loops back through
                 while (true)
                 {
                     Console.WriteLine("Waiting for a client conections...");
                     TcpClient Client = listener.AcceptTcpClient(); //accepts incoming connection requests and creates a TcpClient to handle the request
-                    Console.WriteLine("Connection established - listening");
+                    Console.WriteLine( "Connection established - listening\n");
                     Thread t = new Thread(ProccessClientReq);
-                    t.Start(Client); //new thread is spawned, ProccessClientReq is called, while loop loops back through
+                    t.Start(Client); //new thread is spawned, ProccessClientReq is called, while loop loops back through  
                 }                
             }
             catch(Exception e)
