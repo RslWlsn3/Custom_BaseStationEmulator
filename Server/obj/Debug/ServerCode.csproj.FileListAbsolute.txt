@@ -1,7 +1,0 @@
-C:\Users\connor\Documents\networks\Custom_BaseStationEmulator\Custom_BaseStationEmulator\Server\bin\Debug\Custom_BaseStationEmulator.exe.config
-C:\Users\connor\Documents\networks\Custom_BaseStationEmulator\Custom_BaseStationEmulator\Server\bin\Debug\Custom_BaseStationEmulator.exe
-C:\Users\connor\Documents\networks\Custom_BaseStationEmulator\Custom_BaseStationEmulator\Server\bin\Debug\Custom_BaseStationEmulator.pdb
-C:\Users\connor\Documents\networks\Custom_BaseStationEmulator\Custom_BaseStationEmulator\Server\obj\Debug\ServerCode.csprojAssemblyReference.cache
-C:\Users\connor\Documents\networks\Custom_BaseStationEmulator\Custom_BaseStationEmulator\Server\obj\Debug\ServerCode.csproj.CoreCompileInputs.cache
-C:\Users\connor\Documents\networks\Custom_BaseStationEmulator\Custom_BaseStationEmulator\Server\obj\Debug\Custom_BaseStationEmulator.exe
-C:\Users\connor\Documents\networks\Custom_BaseStationEmulator\Custom_BaseStationEmulator\Server\obj\Debug\Custom_BaseStationEmulator.pdb
