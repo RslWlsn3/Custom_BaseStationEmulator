@@ -8,7 +8,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace ServerUI.Properties
+namespace ClientUI.Properties
 {
 
 

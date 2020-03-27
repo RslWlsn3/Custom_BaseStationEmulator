@@ -7,8 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Client;
+using System.Threading;
 
-namespace ServerUI
+namespace ClientUI
 {
     public partial class Client_Start_Up : Form
     {
@@ -27,11 +29,20 @@ namespace ServerUI
 
         }
 
+        private void connectToServer()
+        {
+            string ID = "ID#" + ID_Box.Text + ": "; //need to change how I hadle ID
+            Client_model cm = new Client_model();
+            Form1 sendMesForm = new Form1("ID#" + ID_Box.Text + ": ", cm);
+            ID_Box.Clear();
+            sendMesForm.ShowDialog();
+            
+
+        }
         private void Button1_Click(object sender, EventArgs e)
         {
-            Form1 sendMesForm = new Form1(ID_Box.Text);
-            sendMesForm.Show();
-            ID_Box.Clear();
+            Thread t1 = new Thread(connectToServer);
+            t1.Start(); //Thread is spawned to listen for user input            
         }
     }
 }

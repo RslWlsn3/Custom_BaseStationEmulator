@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.28822.285
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerCode", "Custom_BaseStationEmulator\ServerCode.csproj", "{8912462D-837D-4F9A-A3C0-23D1617B67C7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientCode", "Client\ClientCode.csproj", "{C91B6696-9999-49F7-96D7-C9A6FF7B8441}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{C91B6696-9999-49F7-96D7-C9A6FF7B8441}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientUI", "ServerUI\ClientUI.csproj", "{3CF92E3F-3C99-41BB-8DC3-3F6F4C5C3C2F}"
 EndProject

@@ -1,4 +1,4 @@
-﻿namespace ServerUI
+﻿namespace ClientUI
 {
     partial class Client_Start_Up
     {

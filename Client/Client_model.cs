@@ -3,64 +3,57 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Net;
+using System.IO;
+using System.Net.Sockets;
 
 namespace Client
 {
-    class Client_console
-    {
-        private static Client_model client;
-        static string autoMessage = "You can't handle the truth!";
+    public class Client_model
+    {        
+        static string IPAddress = "127.0.0.1";
+        static int port = 8080;
+        private TcpClient client = new TcpClient(IPAddress, port);
+        private dynamic reader;
+        private dynamic writer;
+        public string ID;
 
-        //get id from user
-        public static Client_model createClient()
+        //create streamReader/Writer
+        public Client_model() //can't get ID to work with gui
+        {            
+            reader = new StreamReader(client.GetStream());
+            writer = new StreamWriter(client.GetStream());
+        }
+        public Client_model(string id)
         {
-            Console.WriteLine("Give client an ID");
-            string input = Console.ReadLine();
-            string ID = "ID#" + input + ": ";
-            Client_model cm = new Client_model(ID);             
-            return cm;
+            ID = id;
+            reader = new StreamReader(client.GetStream());
+            writer = new StreamWriter(client.GetStream());
         }
 
-        //Display console intructions to user
-        public static void displayInstructions()
+        //Sends message to server and receives reply
+        public string sendMessage(String s)
         {
-            Console.WriteLine("\nConnected to Sever.");
-            Console.WriteLine("\n**************************************\nEnter \"auto\" to send automatic message");
-            Console.WriteLine("Enter \"Exit\" to quit\n**************************************\n");
-            Console.WriteLine("\nEnter string to send to sever (Enter exit to Exit): ");
-        }
-
-        //Send message to serever and resieve response 
-        public static void handleMessage(string userMessage)
-        {
-            string serverResponse;
-            if (userMessage == "auto")
+            //Id works with console, not with gui
+            if (!(ID==null))
             {
-                serverResponse = client.sendMessage("RTS");
-                Console.WriteLine("Server:" + serverResponse);
-                serverResponse = client.sendMessage(autoMessage);
-                Console.WriteLine("Server:" + serverResponse);
+                writer.WriteLine(ID + s);
             }
             else
             {
-                serverResponse =  client.sendMessage(userMessage);
-                Console.WriteLine("Server:" + serverResponse);
+                writer.WriteLine(s);
             }
-            Console.WriteLine("");
+            writer.Flush();
+            string messageFromSever = reader.ReadLine();
+            return messageFromSever;
         }
-        static void Main(string[] args)
+
+        ~Client_model()
         {
-            client = createClient();
-            displayInstructions();
-            string userMessage = "";
-            while (!userMessage.Equals("exit"))
-            {
-                userMessage = Console.ReadLine();
-                handleMessage(userMessage);
-            }
-
-
-
-        }
+            reader.Close();
+            writer.Close();
+            client.Close();
+        } 
+       
     }
 }

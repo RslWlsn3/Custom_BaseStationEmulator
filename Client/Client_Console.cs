@@ -3,44 +3,64 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Net;
-using System.IO;
-using System.Net.Sockets;
 
 namespace Client
 {
-    class Client_model
-    {        
-        static string IPAddress = "127.0.0.1";
-        static int port = 8080;
-        private TcpClient client = new TcpClient(IPAddress, port);
-        private dynamic reader;
-        private dynamic writer;
-        public static string ID;
+    class Client_console
+    {
+        private static Client_model client;
+        static string autoMessage = "You can't handle the truth!";
 
-        //create streamReader/Writer
-        public Client_model(string id)
+        //get id from user
+        public static Client_model createClient()
         {
-            ID = id;
-            reader = new StreamReader(client.GetStream());
-            writer = new StreamWriter(client.GetStream());
+            Console.WriteLine("Give client an ID");
+            string input = Console.ReadLine();
+            string ID = "ID#" + input + ": ";
+            Client_model cm = new Client_model(ID);             
+            return cm;
         }
 
-        //Sends message to server and receives reply
-        public string sendMessage(String s)
+        //Display console intructions to user
+        public static void displayInstructions()
         {
-            writer.WriteLine(ID + s); 
-            writer.Flush();
-            string messageFromSever = reader.ReadLine();
-            return messageFromSever;
+            Console.WriteLine("\nConnected to Sever.");
+            Console.WriteLine("\n**************************************\nEnter \"auto\" to send automatic message");
+            Console.WriteLine("Enter \"Exit\" to quit\n**************************************\n");
+            Console.WriteLine("\nEnter string to send to sever (Enter exit to Exit): ");
         }
 
-        ~Client_model()
+        //Send message to serever and resieve response 
+        public static void handleMessage(string userMessage)
         {
-            reader.Close();
-            writer.Close();
-            client.Close();
-        } 
-       
+            string serverResponse;
+            if (userMessage == "auto")
+            {
+                serverResponse = client.sendMessage("RTS");
+                Console.WriteLine("Server: " + serverResponse);
+                serverResponse = client.sendMessage(autoMessage);
+                Console.WriteLine("Server: " + serverResponse);
+            }
+            else
+            {
+                serverResponse =  client.sendMessage(userMessage);
+                Console.WriteLine("Server: " + serverResponse);
+            }
+            Console.WriteLine("");
+        }
+        static void Main(string[] args)
+        {
+            client = createClient();
+            displayInstructions();
+            string userMessage = "";
+            while (!userMessage.Equals("exit"))
+            {
+                userMessage = Console.ReadLine();
+                handleMessage(userMessage);
+            }
+
+
+
+        }
     }
 }

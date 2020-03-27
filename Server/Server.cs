@@ -32,7 +32,7 @@ namespace Custom_BaseStationEmulator
         //print message data to console
         public void printMessage()
         {
-            Console.WriteLine("Sender ID: " + senderID + "     Message: " + message + "     Time Stamp: " + dt);
+            Console.WriteLine("Sender " + senderID + "     Message: " + message + "     Time Stamp: " + dt);
             Console.WriteLine("Response: " + response + "\n");
         }
     }
@@ -52,6 +52,14 @@ namespace Custom_BaseStationEmulator
             ((List<Message>)messageHash[ID]).Add(messageObject);
         }
 
+        private static void getMessage(StreamReader reader, out string ID, out string message)
+        {      
+            string s = reader.ReadLine();
+            string[] fullMessage = s.Split(new char[] { ' ' }, 2); // splits id from message     
+            ID = fullMessage[0];
+            message = fullMessage[1];           
+        }
+
         //A thread calls ProccessClientReq which reads, replys and saves all messages that the client sends
         private static void ProccessClientReq(object argument) 
         {
@@ -59,33 +67,33 @@ namespace Custom_BaseStationEmulator
             try
             {
                 StreamReader reader = new StreamReader(client.GetStream());
-                StreamWriter writer = new StreamWriter(client.GetStream());  
-                string s = string.Empty;
+                StreamWriter writer = new StreamWriter(client.GetStream());
                 string response;
-                while (!(s = reader.ReadLine()).Equals("Exit") || (s == null))
-                { 
-                    string[] fullMessage = s.Split(new char[] { ' ' }, 2); // splits id from message
-                    string ID = fullMessage[0];
-                    string message = fullMessage[1];
+                string message;
+                string ID;
+                getMessage(reader, out ID, out message);
 
-                    Console.WriteLine("Client Msg: " + s);
+                while (!(message == "exit" || (message == null)))
+                {                              
+                    Console.WriteLine("Client Msg: " + ID + message);
 
                     // handle RTS/CTS (Request To Send / Clear To Send)
                     if (message == "RTS")
                     {
                         response = "CTS";
                         Console.WriteLine(response);
-                        writer.WriteLine("Server: " + response); 
+                        writer.WriteLine(response); 
                     }
                     //handle all normal messages
                     else
                     {
                         response = "ACK";
                         Console.WriteLine(response);
-                        writer.WriteLine("Server: " + response);
+                        writer.WriteLine(response);
                     }
                     writer.Flush();
                     saveMessage(ID, message, response);
+                    getMessage(reader, out ID, out message);
                 }
                 reader.Close();
                 writer.Close();
