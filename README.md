@@ -1,5 +1,5 @@
 # Custom_BaseStationEmulator
- I created this base station emulator for my NETWORKS/DATA COMM II class. The emulator has a server and client/clients which utilize .NET's TcpListener, Tcpclient and Thread class.
+ I created this base station emulator for my NETWORKS/DATA COMM II class. The emulator has a server and clients which utilize .NET's TcpListener, Tcpclient and Thread class.
 
 ## Motivation
 I started from scratch instead of adding to a codebase created by the professor in order to get a better understanding of the project. 
